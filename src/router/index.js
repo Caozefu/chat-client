@@ -8,7 +8,24 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: 'message',
+        name: 'message',
+        component: () => import('../views/message/index.vue')
+      },
+      {
+        path: 'setting',
+        name: 'setting',
+        component: () => import('../views/setting.vue')
+      }
+    ]
+  },
+  {
+    path: '/message-detail',
+    name: 'messageDetail',
+    component: () => import('../views/message/messageDetail.vue')
   },
   {
     path: '/about',
