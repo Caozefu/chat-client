@@ -1,7 +1,7 @@
 <template>
     <div class="message">
-        <van-nav-bar title="消息列表"/>
-        <van-cell-group>
+        <van-nav-bar title="消息列表" class="top-fix"/>
+        <van-cell-group style="padding-top: 46px;">
             <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail">
                 <template slot="title">
                     <div class="message-list-left">
@@ -28,7 +28,7 @@
                 messageList: [
                     {
                         portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: '是倒计时倒计时',
+                        userName: 'Luminous',
                         lastMsg: 'hello!',
                         time: '16:22'
                     }
@@ -46,6 +46,10 @@
 </script>
 
 <style lang="less">
+    .top-fix {
+        width: 100vw;
+        position: fixed;
+    }
     .message-list-left {
         display: flex;
         align-items: center;

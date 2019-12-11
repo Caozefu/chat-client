@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import axios from '../http/axios'
+import { Toast } from 'vant';
 
 Vue.use(VueRouter)
 
@@ -16,6 +18,11 @@ const routes = [
         component: () => import('../views/message/index.vue')
       },
       {
+        path: 'friends',
+        name: 'friends',
+        component: () => import('../views/friends.vue')
+      },
+      {
         path: 'setting',
         name: 'setting',
         component: () => import('../views/setting.vue')
@@ -28,17 +35,27 @@ const routes = [
     component: () => import('../views/message/messageDetail.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/user/register.vue')
   }
 ]
 
 const router = new VueRouter({
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.name === 'register' || to.name === 'login') {
+    next();
+    return;
+  }
+  axios.get('/api/login/status').then(res => {
+    if (res.data.code === 500) {
+      Toast('请先登陆');
+      next('/register');
+    }
+  })
+});
 
 export default router
