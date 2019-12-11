@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import axios from '../http/axios'
-import { Toast } from 'vant';
+// import axios from '../http/axios'
+// import { Toast } from 'vant';
 
 Vue.use(VueRouter)
 
@@ -38,6 +38,11 @@ const routes = [
     path: '/register',
     name: 'register',
     component: () => import('../views/user/register.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/user/login.vue')
   }
 ]
 
@@ -45,17 +50,17 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.name === 'register' || to.name === 'login') {
-    next();
-    return;
-  }
-  axios.get('/api/login/status').then(res => {
-    if (res.data.code === 500) {
-      Toast('请先登陆');
-      next('/register');
-    }
-  })
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.name === 'register' || to.name === 'login') {
+//     next();
+//     return;
+//   }
+//   axios.get('/api/login/status').then(res => {
+//     if (res.data.code === 500) {
+//       Toast('请先登陆');
+//       next('/register');
+//     }
+//   })
+// });
 
 export default router

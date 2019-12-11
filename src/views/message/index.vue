@@ -1,7 +1,9 @@
 <template>
     <div class="message">
-        <van-nav-bar title="消息列表" class="top-fix"/>
-        <van-cell-group style="padding-top: 46px;">
+        <van-sticky>
+            <van-nav-bar title="消息列表"/>
+        </van-sticky>
+        <van-cell-group>
             <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail">
                 <template slot="title">
                     <div class="message-list-left">
@@ -26,6 +28,66 @@
         data() {
             return {
                 messageList: [
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
+                    {
+                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
+                        userName: 'Luminous',
+                        lastMsg: 'hello!',
+                        time: '16:22'
+                    },
                     {
                         portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
                         userName: 'Luminous',
