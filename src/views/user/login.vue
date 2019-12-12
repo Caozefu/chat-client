@@ -25,7 +25,8 @@
 </template>
 
 <script>
-    import axios from '../../http/axios'
+    import {Toast} from 'vant';
+
     export default {
         name: "login",
         data() {
@@ -36,10 +37,34 @@
         },
         methods: {
             login() {
-                axios.post('/api/login', {
+                this.$http.post('/api/login', {
                     name: this.username,
                     password: this.password
-                }).then()
+                }).then((res) => {
+                    if (res.data.code === 200) {
+                        document.cookie = 'token=' + res.data.data.token;
+                        localStorage.setItem('token', res.data.data.token);
+                        this.$store.commit('login', res.data.data);
+                        this.$http.get('/api/getUserInfo')
+                            .then(res => {
+                                if (res.data.code === 200) {
+                                    this.$store.commit('login', res.data.data);
+                                } else {
+                                    Toast.fail('请先登陆');
+                                    this.$store.commit('logout');
+                                }
+                            })
+                            .catch(() => {
+                                Toast.fail('请先登陆');
+                            });
+                        Toast.success('登陆成功');
+                        this.$router.push('/');
+                    } else {
+                        Toast.fail(res.data.message);
+                    }
+                }).catch(e => {
+                    Toast.fail(e);
+                });
             },
             register() {
                 this.$router.push('/register')
