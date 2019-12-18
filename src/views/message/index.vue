@@ -4,7 +4,7 @@
             <van-nav-bar title="消息列表"/>
         </van-sticky>
         <van-cell-group>
-            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail">
+            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail(item.userName)">
                 <template slot="title">
                     <div class="message-list-left">
                         <div class="portrait">
@@ -98,9 +98,12 @@
             }
         },
         methods: {
-            toDetail() {
+            toDetail(name) {
                 this.$router.push({
-                    name: 'messageDetail'
+                    name: 'messageDetail',
+                    query: {
+                        name
+                    }
                 });
             }
         }
