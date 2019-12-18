@@ -1,9 +1,9 @@
-export function getToken(key) {
+export function getToken2(key) {
     let cookie = localStorage.getItem(key);
     return cookie || ''
 }
 
-export function getToken2(key) {
+export function getToken(key) {
     let cookies = document.cookie.split(';');
     let obj = {};
     cookies.forEach(item => {

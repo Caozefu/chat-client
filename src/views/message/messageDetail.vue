@@ -4,10 +4,11 @@
             <van-icon name="ellipsis" slot="right" />
         </van-nav-bar>
         <div class="message-content">
-            <ul>
-                <li v-for="(item, index) in messageList" :key="index">
-                    <img :src="item.portrait" alt="">
+            <ul ref="message">
+                <li v-for="(item, index) in messageList" :key="index" :class="item.type ? 'own' : 'other'">
+                    <img :src="item.portrait" alt="" v-if="!item.type">
                     <span class="message-part">{{item.msg}}</span>
+                    <img :src="item.portrait" alt="" v-if="item.type">
                 </li>
             </ul>
         </div>
@@ -34,10 +35,13 @@
         },
         created() {
             this.userName = this.$route.query.name;
-            this.IO = io.connect('http://35.241.111.247:3000/');
+            this.IO = io.connect('http://192.168.25.129:3000/');
             this.IO.on('chat message', (data) => {
-                console.log(data);
-                this.messageList.push(data);
+                const type = {type: this.userInfo.user_uid === data.id};
+                this.messageList.push(Object.assign(data, type));
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
             });
         },
         computed: {
@@ -47,15 +51,25 @@
         },
         methods: {
             send() {
+                if (!this.msg.trim()) return;
                 this.IO.emit('chat message', {
                     portrait: this.userInfo.portrait,
                     name: this.userInfo.user_name,
+                    id: this.userInfo.user_uid,
                     msg: this.msg
                 });
                 this.msg = '';
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
             },
             back() {
-                this.$router.push('/message');
+                this.$router.push('/');
+            },
+            // 滚动到屏幕底部
+            scrollToBottom() {
+                const h = this.$refs['message'].scrollHeight;
+                this.$refs['message'].scrollTop = h;
             }
         }
     }
@@ -68,14 +82,17 @@
     }
     .message-content {
         & > ul {
-            height: calc(100vh - 46px);
+            height: calc(100vh - 96px);
             overflow-y: auto;
         }
         & > ul li {
-            height: 60px;
+            margin-top: 15px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 0 10px;
+            &:last-child {
+                margin-bottom: 15px;
+            }
             & > img {
                 display: block;
                 width: 45px;
@@ -84,12 +101,47 @@
                 margin-right: 15px;
             }
             .message-part {
+                max-width: calc(100vw - 100px);
                 display: block;
                 line-height: 45px;
-                background-color: #fff;
+                background-color: #fefefe;
                 float: left;
                 padding: 0 10px;
                 border-radius: 5px;
+                word-break: break-all;
+                position: relative;
+            }
+            &.other {
+                .message-part:after {
+                    content: '';
+                    display: block;
+                    border: 5px solid transparent;
+                    border-right-color: #fefefe;
+                    position: absolute;
+                    top: 20px;
+                    left: -10px;
+                    transform: translateY(-50%);
+                }
+            }
+            &.own {
+                justify-content: flex-end;
+                & > img {
+                    margin-left: 15px;
+                    margin-right: 0;
+                }
+                .message-part {
+                    background-color: #abe97c;
+                    &:after {
+                        content: '';
+                        display: block;
+                        border: 5px solid transparent;
+                        border-left-color: #abe97c;
+                        position: absolute;
+                        top: 20px;
+                        right: -10px;
+                        transform: translateY(-50%);
+                    }
+                }
             }
         }
     }
