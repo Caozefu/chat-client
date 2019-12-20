@@ -4,7 +4,7 @@
             <van-nav-bar title="消息列表"/>
         </van-sticky>
         <van-cell-group>
-            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail(item.userName)">
+            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail(item.user_uid, item.userName)">
                 <template slot="title">
                     <div class="message-list-left">
                         <div class="portrait">
@@ -31,66 +31,7 @@
                     {
                         portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
                         userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    },
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
+                        user_uid: 48,
                         lastMsg: 'hello!',
                         time: '16:22'
                     }
@@ -98,11 +39,12 @@
             }
         },
         methods: {
-            toDetail(name) {
+            toDetail(id, name) {
                 this.$router.push({
                     name: 'messageDetail',
                     query: {
-                        name
+                        name,
+                        id
                     }
                 });
             }

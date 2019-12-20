@@ -1,0 +1,89 @@
+<template>
+    <div class="setting">
+        <van-nav-bar title="好友列表"/>
+        <van-grid :column-num="2">
+            <van-grid-item icon="home-o" text="群聊" dot/>
+            <van-grid-item icon="search" text="添加好友" :info="msgNum" @click="addFriend"/>
+        </van-grid>
+        <van-index-bar style="height: calc(100vh - 180px); overflow-y: scroll">
+            <template v-for="(value, key, index) in friendsList">
+                <template v-if="value.length">
+                    <van-index-anchor :index="key.toUpperCase()" :key="index"></van-index-anchor>
+                    <van-cell v-for="(sub_item, sub_index) in value"
+                              :key="sub_index" @click="friendDetail(sub_item)">
+                        <template slot="title">
+                            <img :src="sub_item.portrait" alt="" class="portrait">
+                            <span class="custom-title">{{sub_item.user_name}}</span>
+                        </template>
+                    </van-cell>
+                </template>
+            </template>
+        </van-index-bar>
+    </div>
+</template>
+
+<script>
+    import Pinyin from "../../utils/ChinesePY";
+    import { mapState } from 'vuex';
+    import {Toast} from 'vant';
+
+    export default {
+        name: "friends",
+        data() {
+            return {
+                msgNum: 1,
+                // 原始好友列表
+                originalFriendsList: [],
+                friendsList: {}
+            }
+        },
+        methods: {
+            formatFriendList(list) {
+                console.log(list);
+                const codeList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+                let res = {};
+                codeList.forEach(code => res[code] = []);
+                list.forEach(item => {
+                    const code = Pinyin.getWordsCode(item.user_name)[0];
+                    res[code].push(item)
+                });
+                return res;
+            },
+            friendDetail(item) {
+                console.log(item)
+            },
+            addFriend() {
+                this.$router.push('/search-friends');
+            }
+        },
+        created() {
+            this.$http.get('/api/getFriends?id=' + this.userInfo.user_uid)
+                .then(res => {
+                    this.originalFriendsList = res.data.data;
+                    this.friendsList = this.formatFriendList(this.originalFriendsList);
+                })
+                .catch(() => {
+                    Toast.fail('获取好友列表失败')
+                })
+        },
+        computed: {
+            ...mapState({
+                userInfo: 'userInfo'
+            })
+        }
+    }
+</script>
+
+<style lang="less" scoped>
+    .setting {
+        height: 100vh;
+        overflow: hidden;
+    }
+    .portrait {
+        width: 30px;
+        height: 30px;
+        vertical-align: middle;
+        border-radius: 3px;
+        margin-right: 10px;
+    }
+</style>

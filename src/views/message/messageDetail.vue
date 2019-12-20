@@ -30,13 +30,16 @@
                 userName: '',
                 msg: '',
                 IO: null,
-                messageList: []
+                messageList: [],
+                targetId: ''
             }
         },
         created() {
             this.userName = this.$route.query.name;
-            this.IO = io.connect('http://192.168.25.129:3000/');
-            this.IO.on('chat message', (data) => {
+            this.targetId = this.$route.query.id;
+            this.IO = io.connect('http://192.168.25.129:3000');
+            this.IO.on('/' + this.userInfo.user_uid, (data) => {
+                console.log(this.userInfo.user_uid);
                 const type = {type: this.userInfo.user_uid === data.id};
                 this.messageList.push(Object.assign(data, type));
                 this.$nextTick(() => {
@@ -56,7 +59,8 @@
                     portrait: this.userInfo.portrait,
                     name: this.userInfo.user_name,
                     id: this.userInfo.user_uid,
-                    msg: this.msg
+                    msg: this.msg,
+                    target: this.targetId
                 });
                 this.msg = '';
                 this.$nextTick(() => {

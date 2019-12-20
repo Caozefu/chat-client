@@ -21,7 +21,7 @@ const routes = [
             {
                 path: 'friends',
                 name: 'friends',
-                component: () => import('../views/friends.vue')
+                component: () => import('../views/friend/index.vue')
             },
             {
                 path: 'setting',
@@ -29,6 +29,11 @@ const routes = [
                 component: () => import('../views/setting.vue')
             }
         ]
+    },
+    {
+        path: '/search-friends',
+        name: 'searchFriends',
+        component: () => import('../views/friend/searchFriends.vue')
     },
     {
         path: '/message-detail',
@@ -63,7 +68,7 @@ router.beforeEach((to, from, next) => {
             .then(res => {
                 if (res.data.code === 200) {
                     store.commit('login', res.data.data);
-                    next('/');
+                    next();
                 } else {
                     Toast.fail('请先登陆');
                     store.commit('logout');
