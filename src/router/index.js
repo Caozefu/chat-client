@@ -30,16 +30,24 @@ const routes = [
             }
         ]
     },
+    // Friend
     {
         path: '/search-friends',
         name: 'searchFriends',
         component: () => import('../views/friend/searchFriends.vue')
     },
     {
+        path: '/friends-request',
+        name: 'friendRequest',
+        component: () => import('../views/friend/friendRequest.vue')
+    },
+    // Message
+    {
         path: '/message-detail',
         name: 'messageDetail',
         component: () => import('../views/message/messageDetail.vue')
     },
+    // Login / Register
     {
         path: '/register',
         name: 'register',

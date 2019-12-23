@@ -2,6 +2,14 @@
     <div class="search-friends">
         <van-nav-bar title="添加好友" left-arrow @click-left="back">
         </van-nav-bar>
+        <van-cell-group>
+            <van-cell is-link to="/friends-request">
+                <template slot="title">
+                    <span>好友申请  </span>
+                    <van-tag round type="danger" v-if="requestNum > 0">{{requestNum}}</van-tag>
+                </template>
+            </van-cell>
+        </van-cell-group>
         <van-search
                 v-model="searchKey"
                 placeholder="请输入用户名/手机号"
@@ -42,7 +50,8 @@
             return {
                 searchKey: '',
                 searchResult: [],
-                searchFlag: false
+                searchFlag: false,
+                requestNum: 0
             }
         },
         computed: {
@@ -52,7 +61,7 @@
         },
         methods: {
             back() {
-                this.$router.push('/friends');
+                this.$router.back();
             },
             onSearch(key) {
                 if (!key) return;
@@ -83,6 +92,19 @@
                         Toast.fail('添加失败，请稍后重试');
                     })
             }
+        },
+        created() {
+            this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
+                .then(res => {
+                    if (res.data.code === 200) {
+                        this.requestNum = res.data.data.length;
+                    } else {
+                        Toast.fail(res.data.message);
+                    }
+                })
+                .catch(() => {
+                    Toast.fail('获取好友申请列表失败');
+                })
         }
     }
 </script>
