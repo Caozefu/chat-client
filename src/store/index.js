@@ -6,7 +6,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userInfo: null,
-    isLogin: false
+    isLogin: false,
+    friendList: [],
+    msgNum: 0
   },
   mutations: {
     login( state, data ) {
@@ -16,6 +18,12 @@ export default new Vuex.Store({
     logout( state ) {
       state.isLogin = false;
       state.userInfo = null;
+    },
+    updateFriendList( state, data ) {
+      state.friendList = data;
+    },
+    requestNum(state, data) {
+      state.msgNum = data;
     }
   },
   actions: {

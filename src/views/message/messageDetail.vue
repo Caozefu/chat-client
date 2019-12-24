@@ -31,21 +31,28 @@
                 msg: '',
                 IO: null,
                 messageList: [],
-                targetId: ''
+                targetId: '',
+                messageCache: {}
             }
         },
         created() {
+            this.messageCache = JSON.parse(localStorage.getItem('message')) || {};
             this.userName = this.$route.query.name;
             this.targetId = this.$route.query.id;
-            this.IO = io.connect('http://35.241.111.247:3000');
+            // this.IO = io.connect('http://35.241.111.247:3000');
+            this.IO = io.connect('http://127.0.0.1:3000');
             this.IO.on(this.userInfo.user_uid, (data) => {
-                console.log(this.userInfo.user_uid);
-                const type = {type: this.userInfo.user_uid === data.id};
-                this.messageList.push(Object.assign(data, type));
-                this.$nextTick(() => {
-                    this.scrollToBottom();
-                });
+                // filter
+                if ((data.id === this.userInfo.user_uid && data.target === this.targetId) || (data.id === this.targetId && data.target === this.userInfo.user_uid)) {
+                    const type = {type: this.userInfo.user_uid === data.id};
+                    this.messageList.push(Object.assign(data, type));
+                    this.setStorage(Object.assign(data, type));
+                    this.$nextTick(() => {
+                        this.scrollToBottom();
+                    });
+                }
             });
+            this.getStorage();
         },
         computed: {
             ...mapState({
@@ -53,6 +60,7 @@
             })
         },
         methods: {
+            // 发送信息
             send() {
                 if (!this.msg.trim()) return;
                 this.IO.emit('chat message', {
@@ -60,7 +68,8 @@
                     name: this.userInfo.user_name,
                     id: this.userInfo.user_uid,
                     msg: this.msg,
-                    target: this.targetId
+                    target: this.targetId,
+                    time: new Date().getTime()
                 });
                 this.msg = '';
                 this.$nextTick(() => {
@@ -68,12 +77,27 @@
                 });
             },
             back() {
-                this.$router.push('/');
+                this.$router.back();
             },
             // 滚动到屏幕底部
             scrollToBottom() {
+                if (!this.$refs['message']) return;
                 const h = this.$refs['message'].scrollHeight;
                 this.$refs['message'].scrollTop = h;
+            },
+            // 存储聊天记录
+            setStorage(data) {
+                const id = this.targetId;
+                if (!this.messageCache[id]) this.messageCache[id] = [];
+                this.messageCache[id].push(data);
+                localStorage.setItem('message', JSON.stringify(this.messageCache));
+            },
+            // 获取聊天记录
+            getStorage() {
+                const cache = JSON.parse(localStorage.getItem('message'));
+                if (cache && cache[this.targetId]) {
+                    this.messageList = cache[this.targetId];
+                }
             }
         }
     }

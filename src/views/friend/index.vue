@@ -31,24 +31,29 @@
         name: "friends",
         data() {
             return {
-                msgNum: 0,
+                // msgNum: 0,
                 // 原始好友列表
-                originalFriendsList: [],
+                // originalFriendsList: [],
                 friendsList: {},
             }
         },
         methods: {
+            // 格式化好友列表（按字母排序）
             formatFriendList(list) {
-                console.log(list);
-                const codeList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+                const codeList = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '#'];
                 let res = {};
                 codeList.forEach(code => res[code] = []);
                 list.forEach(item => {
                     const code = Pinyin.getWordsCode(item.user_name)[0];
-                    res[code].push(item)
+                    if (!res[code]) {
+                        res['#'].push(item);
+                    } else {
+                        res[code].push(item);
+                    }
                 });
                 return res;
             },
+            // 好友详情
             friendDetail(id, name) {
                 this.$router.push({
                     name: 'messageDetail',
@@ -58,34 +63,33 @@
                     }
                 });
             },
+            // 添加好友
             addFriend() {
                 this.$router.push('/search-friends');
-            }
+            },
+            // 获取好友列表
+            getFriend() {
+                this.$http.get('/api/getFriends?id=' + this.userInfo.user_uid)
+                    .then(res => {
+                        this.$store.commit('updateFriendList', res.data.data);
+                        this.originalFriendsList = res.data.data;
+                        this.friendsList = this.formatFriendList(this.originalFriendsList);
+                        this.$router.push({
+                            name: 'message'
+                        });
+                    })
+                    .catch(() => {
+                        Toast.fail('获取好友列表失败, 请刷新重试')
+                    });
+            },
         },
         created() {
-            this.$http.get('/api/getFriends?id=' + this.userInfo.user_uid)
-                .then(res => {
-                    this.originalFriendsList = res.data.data;
-                    this.friendsList = this.formatFriendList(this.originalFriendsList);
-                })
-                .catch(() => {
-                    Toast.fail('获取好友列表失败')
-                });
-            this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
-                .then(res => {
-                    if (res.data.code === 200) {
-                        this.msgNum = res.data.data.length;
-                    } else {
-                        Toast.fail(res.data.message);
-                    }
-                })
-                .catch(() => {
-                    Toast.fail('获取好友申请列表失败');
-                });
+            this.getFriend();
         },
         computed: {
             ...mapState({
-                userInfo: 'userInfo'
+                userInfo: 'userInfo',
+                msgNum: 'msgNum'
             })
         }
     }

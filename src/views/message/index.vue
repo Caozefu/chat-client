@@ -4,38 +4,44 @@
             <van-nav-bar title="消息列表"/>
         </van-sticky>
         <van-cell-group>
-            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail(item.user_uid, item.userName)">
+            <van-cell v-for="(item, index) in messageList" :key="index" @click="toDetail(item.id, item.name)">
                 <template slot="title">
                     <div class="message-list-left">
                         <div class="portrait">
                             <img :src="item.portrait" alt="">
                         </div>
                         <div class="custom-title">
-                            <p class="user-name">{{item.userName}}</p>
-                            <p class="last-message">{{item.lastMsg}}</p>
+                            <p class="user-name">{{item.name}}</p>
+                            <p class="last-message">{{item.msg}}</p>
                         </div>
                     </div>
                 </template>
-                <span class="message-time">{{item.time}}</span>
+                <span class="message-time">{{item.time | formatTime}}</span>
             </van-cell>
         </van-cell-group>
     </div>
 </template>
 
 <script>
+    import { mapState } from 'vuex';
+    import io from "socket.io-client";
+    import sortArrayByKey from "../../utils/sortArrayByKey";
     export default {
         name: "message",
         data() {
             return {
-                messageList: [
-                    {
-                        portrait: 'https://gss0.bdstatic.com/70cFfyinKgQIm2_p8IuM_a/daf/pic/item/a8773912b31bb051ec146159397adab44aede08b.jpg',
-                        userName: 'Luminous',
-                        user_uid: 48,
-                        lastMsg: 'hello!',
-                        time: '16:22'
-                    }
-                ]
+                messageList: [],
+                messageCache: {}
+            }
+        },
+        computed: {
+            ...mapState({
+                userInfo: 'userInfo',
+            })
+        },
+        filters: {
+            formatTime(value) {
+                return `${new Date(value).getHours()}:${new Date(value).getMinutes()}`;
             }
         },
         methods: {
@@ -47,7 +53,51 @@
                         id
                     }
                 });
+            },
+            // 监听消息记录
+            listenMessage() {
+                this.IO = io.connect('http://127.0.0.1:3000');
+                this.IO.on(this.userInfo.user_uid, (data) => {
+                    this.setStorage(data);
+                    let current = this.messageList.find(item => item.id === data.id);
+                    if (current) {
+                        const index = this.messageList.indexOf(current);
+                        this.messageList.splice(index, 1);
+                        this.messageList.unshift(data);
+                    } else {
+                        this.messageList.unshift(data);
+                    }
+                });
+            },
+            // 存储聊天记录
+            setStorage(data) {
+                const id = data.id;
+                if (!this.messageCache[id]) this.messageCache[id] = [];
+                this.messageCache[id].push(data);
+                localStorage.setItem('message', JSON.stringify(this.messageCache));
+            },
+            // 从local获取聊天记录
+            async getStorage() {
+                const cache = JSON.parse(localStorage.getItem('message'));
+                const arr = [];
+                for (const key in cache) {
+                    const item = cache[key][cache[key].length - 1];
+                    // const i = this.friendList.find(v => v.user_uid == key);
+                    const res = await this.$http.get('/api/searchFriendById?id=' + key);
+                    const i = res.data.data[0] ? res.data.data[0] : {};
+                    item.id = i.user_uid;
+                    item.name = i.user_name;
+                    item.portrait = i.portrait;
+                    arr.push(item)
+                }
+                sortArrayByKey(arr, 'time');
+                this.messageList = arr;
             }
+        },
+        created() {
+            this.messageCache = JSON.parse(localStorage.getItem('message')) || {};
+            this.listenMessage();
+            this.getStorage();
         }
     }
 </script>
