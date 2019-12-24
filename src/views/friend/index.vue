@@ -3,14 +3,14 @@
         <van-nav-bar title="好友列表"/>
         <van-grid :column-num="2">
             <van-grid-item icon="home-o" text="群聊" dot/>
-            <van-grid-item icon="search" text="添加好友" :info="msgNum" @click="addFriend"/>
+            <van-grid-item icon="search" text="添加好友" :info="msgNum ? msgNum : ''" @click="addFriend"/>
         </van-grid>
         <van-index-bar style="height: calc(100vh - 180px); overflow-y: scroll">
             <template v-for="(value, key, index) in friendsList">
                 <template v-if="value.length">
                     <van-index-anchor :index="key.toUpperCase()" :key="index"></van-index-anchor>
                     <van-cell v-for="(sub_item, sub_index) in value"
-                              :key="sub_index" @click="friendDetail(sub_item)">
+                              :key="sub_index" @click="friendDetail(sub_item.user_uid, sub_item.user_name)">
                         <template slot="title">
                             <img :src="sub_item.portrait" alt="" class="portrait">
                             <span class="custom-title">{{sub_item.user_name}}</span>
@@ -31,10 +31,10 @@
         name: "friends",
         data() {
             return {
-                msgNum: 1,
+                msgNum: 0,
                 // 原始好友列表
                 originalFriendsList: [],
-                friendsList: {}
+                friendsList: {},
             }
         },
         methods: {
@@ -49,8 +49,14 @@
                 });
                 return res;
             },
-            friendDetail(item) {
-                console.log(item)
+            friendDetail(id, name) {
+                this.$router.push({
+                    name: 'messageDetail',
+                    query: {
+                        name,
+                        id
+                    }
+                });
             },
             addFriend() {
                 this.$router.push('/search-friends');
@@ -64,7 +70,18 @@
                 })
                 .catch(() => {
                     Toast.fail('获取好友列表失败')
+                });
+            this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
+                .then(res => {
+                    if (res.data.code === 200) {
+                        this.msgNum = res.data.data.length;
+                    } else {
+                        Toast.fail(res.data.message);
+                    }
                 })
+                .catch(() => {
+                    Toast.fail('获取好友申请列表失败');
+                });
         },
         computed: {
             ...mapState({

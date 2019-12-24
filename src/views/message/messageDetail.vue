@@ -38,7 +38,7 @@
             this.userName = this.$route.query.name;
             this.targetId = this.$route.query.id;
             this.IO = io.connect('http://192.168.25.129:3000');
-            this.IO.on('/' + this.userInfo.user_uid, (data) => {
+            this.IO.on(this.userInfo.user_uid, (data) => {
                 console.log(this.userInfo.user_uid);
                 const type = {type: this.userInfo.user_uid === data.id};
                 this.messageList.push(Object.assign(data, type));

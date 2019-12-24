@@ -15,7 +15,7 @@
                     </div>
                 </template>
                 <div class="operate">
-                    <van-button type="primary" size="small">同意</van-button>
+                    <van-button type="primary" size="small" @click="apply(item.user_uid)">同意</van-button>
                     <van-button type="danger" size="small">拒绝</van-button>
                     <van-button type="warning" size="small">忽略</van-button>
                 </div>
@@ -26,6 +26,7 @@
 
 <script>
     import {Toast} from 'vant';
+    import { Notify } from 'vant';
     import { mapState } from 'vuex';
     export default {
         name: "friendRequest",
@@ -37,6 +38,36 @@
         methods: {
             back() {
                 this.$router.back();
+            },
+            // 同意申请
+            apply(id) {
+                this.$http.post('/api/applyFriend', { id })
+                    .then(res => {
+                        if (res.data.code === 200) {
+                            Toast.success('添加成功');
+                            this.getRequest();
+                        } else {
+                            Toast.fail(res.data.message);
+                            this.getRequest();
+                        }
+                    })
+                    .catch(() => {
+                        Notify({ type: 'danger', message: '服务器异常，请稍后重试' });
+                    })
+            },
+            // 获取申请列表
+            getRequest() {
+                this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
+                    .then(res => {
+                        if (res.data.code === 200) {
+                            this.requestList = res.data.data;
+                        } else {
+                            Toast.fail(res.data.message);
+                        }
+                    })
+                    .catch(() => {
+                        Toast.fail('获取好友申请列表失败');
+                    })
             }
         },
         computed: {
@@ -45,17 +76,7 @@
             })
         },
         created() {
-            this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
-                .then(res => {
-                    if (res.data.code === 200) {
-                        this.requestList = res.data.data;
-                    } else {
-                        Toast.fail(res.data.message);
-                    }
-                })
-                .catch(() => {
-                    Toast.fail('获取好友申请列表失败');
-                })
+            this.getRequest();
         }
     }
 </script>
