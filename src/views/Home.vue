@@ -44,8 +44,12 @@
                 this.getRequest();
             }, 1500);
         },
-        mounted() {
-            this.$router.push('/message');
+        beforeRouteEnter(to, from, next) {
+            if (to.name === 'home') {
+                next('/message')
+            } else {
+                next()
+            }
         }
     }
 </script>

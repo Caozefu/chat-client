@@ -11,7 +11,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-irregular-whitespace': 'off',
-    'vue/no-parsing-error': 'off'
+    'vue/no-parsing-error': 'off',
+    'no-unreachable': 'off'
   },
   parserOptions: {
     parser: 'babel-eslint'

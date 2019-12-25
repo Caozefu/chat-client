@@ -4,7 +4,7 @@
             <van-nav-bar title="设置"/>
         </van-sticky>
         <van-cell-group>
-            <van-cell is-link class="user-info">
+            <van-cell is-link class="user-info" @click="toDetail">
                 <template slot="title">
                     <div class="message-list-left">
                         <div class="portrait">
@@ -42,6 +42,9 @@
                 this.$store.commit('logout');
                 localStorage.removeItem('token');
                 this.$router.push('/login')
+            },
+            toDetail() {
+                this.$router.push('/setting-detail')
             }
         },
         mounted() {

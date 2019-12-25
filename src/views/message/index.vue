@@ -62,11 +62,11 @@
             // 监听消息记录
             listenMessage() {
                 // this.IO = io.connect('http://35.241.111.247:3000');
-                this.IO = io.connect('http://127.0.0.1:3000');
+                this.IO = io.connect('http://192.168.25.129:3000');
                 this.IO.on(this.userInfo.user_uid, (data) => {
                     this.setStorage(data);
                     // 发送通知
-                    if (data.id !== this.userInfo.uid) pushNotice(data.name, data.portrait, data.msg);
+                    if (data.id !== this.userInfo.user_uid) pushNotice(data.name, data.portrait, data.msg);
 
                     let current = this.messageList.find(item => item.id === data.id);
                     if (current) {

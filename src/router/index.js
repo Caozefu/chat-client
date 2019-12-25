@@ -55,6 +55,11 @@ const routes = [
         name: 'messageDetail',
         component: () => import('../views/message/messageDetail.vue')
     },
+    {
+        path: '/setting-detail',
+        name: 'settingDetail',
+        component: () => import('../views/user/settingDetail.vue')
+    },
     // Login / Register
     {
         path: '/register',
