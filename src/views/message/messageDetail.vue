@@ -32,15 +32,17 @@
                 IO: null,
                 messageList: [],
                 targetId: '',
-                messageCache: {}
+                messageCache: {
+                    unreadNum: {}
+                }
             }
         },
         created() {
-            this.messageCache = JSON.parse(localStorage.getItem('message')) || {};
+            this.messageCache = JSON.parse(localStorage.getItem('message')) || {unreadNum: {}};
             this.userName = this.$route.query.name;
             this.targetId = this.$route.query.id;
-            this.IO = io.connect('http://35.241.111.247:3000');
-            // this.IO = io.connect('http://127.0.0.1:3000');
+            // this.IO = io.connect('http://35.241.111.247:3000');
+            this.IO = io.connect('http://127.0.0.1:3000');
             this.IO.on(this.userInfo.user_uid, (data) => {
                 // filter
                 if ((data.id === this.userInfo.user_uid && data.target === this.targetId) || (data.id === this.targetId && data.target === this.userInfo.user_uid)) {
@@ -97,8 +99,13 @@
                 const cache = JSON.parse(localStorage.getItem('message'));
                 if (cache && cache[this.targetId]) {
                     this.messageList = cache[this.targetId];
+                    cache.unreadNum[this.targetId] = 0;
+                    localStorage.setItem('message', JSON.stringify(cache))
                 }
             }
+        },
+        mounted() {
+            this.scrollToBottom();
         }
     }
 </script>

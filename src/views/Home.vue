@@ -43,6 +43,9 @@
             setInterval(() => {
                 this.getRequest();
             }, 1500);
+        },
+        mounted() {
+            this.$router.push('/message');
         }
     }
 </script>

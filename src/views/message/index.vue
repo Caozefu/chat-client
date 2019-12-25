@@ -9,6 +9,7 @@
                     <div class="message-list-left">
                         <div class="portrait">
                             <img :src="item.portrait" alt="">
+                            <van-tag type="danger" v-if="getUnreadNum(item.id)">{{getUnreadNum(item.id)}}</van-tag>
                         </div>
                         <div class="custom-title">
                             <p class="user-name">{{item.name}}</p>
@@ -26,12 +27,16 @@
     import { mapState } from 'vuex';
     import io from "socket.io-client";
     import sortArrayByKey from "../../utils/sortArrayByKey";
+    import { pushNotice } from "../../utils/notice";
+
     export default {
         name: "message",
         data() {
             return {
                 messageList: [],
-                messageCache: {}
+                messageCache: {
+                    unreadNum: {}
+                }
             }
         },
         computed: {
@@ -56,10 +61,13 @@
             },
             // 监听消息记录
             listenMessage() {
-                this.IO = io.connect('http://35.241.111.247:3000');
-                // this.IO = io.connect('http://127.0.0.1:3000');
+                // this.IO = io.connect('http://35.241.111.247:3000');
+                this.IO = io.connect('http://127.0.0.1:3000');
                 this.IO.on(this.userInfo.user_uid, (data) => {
                     this.setStorage(data);
+                    // 发送通知
+                    if (data.id !== this.userInfo.uid) pushNotice(data.name, data.portrait, data.msg);
+
                     let current = this.messageList.find(item => item.id === data.id);
                     if (current) {
                         const index = this.messageList.indexOf(current);
@@ -73,15 +81,22 @@
             // 存储聊天记录
             setStorage(data) {
                 const id = data.id;
-                if (!this.messageCache[id]) this.messageCache[id] = [];
+                if (!this.messageCache[id]) {
+                    this.messageCache[id] = [];
+                    this.messageCache.unreadNum[id] = 0;
+                }
+                if (!this.messageCache.unreadNum[id]) this.messageCache.unreadNum[id] = 0;
                 this.messageCache[id].push(data);
+                this.messageCache.unreadNum[id]++;
                 localStorage.setItem('message', JSON.stringify(this.messageCache));
+                this.getTotalUnread();
             },
             // 从local获取聊天记录
             async getStorage() {
                 const cache = JSON.parse(localStorage.getItem('message'));
                 const arr = [];
                 for (const key in cache) {
+                    if (key === 'unreadNum') continue;
                     const item = cache[key][cache[key].length - 1];
                     // const i = this.friendList.find(v => v.user_uid == key);
                     const res = await this.$http.get('/api/searchFriendById?id=' + key);
@@ -93,10 +108,25 @@
                 }
                 sortArrayByKey(arr, 'time');
                 this.messageList = arr;
+            },
+            // 根据id获取未读消息条数
+            getUnreadNum(id) {
+                return this.messageCache.unreadNum[id] || 0;
+            },
+            // 获取所有未读消息
+            getTotalUnread () {
+                let num = 0;
+                for (const key in this.messageCache.unreadNum) {
+                    num += Number(this.messageCache.unreadNum[key])
+                }
+                console.log('总消息：', num);
+                return num;
             }
         },
         created() {
-            this.messageCache = JSON.parse(localStorage.getItem('message')) || {};
+            this.messageCache = JSON.parse(localStorage.getItem('message')) || {
+                unreadNum: {}
+            };
             this.listenMessage();
             this.getStorage();
         }
@@ -114,11 +144,24 @@
         .portrait {
             width: 50px;
             height: 50px;
-            border-radius: 5px;
-            overflow: hidden;
+            /*overflow: hidden;*/
+            position: relative;
             & > img {
                 width: 100%;
                 height: 100%;
+                border-radius: 5px;
+            }
+            .van-tag {
+                display: block;
+                width: 18px;
+                height: 18px;
+                position: absolute;
+                right: -9px;
+                top: -9px;
+                padding: 0;
+                border-radius: 50%;
+                text-align: center;
+                line-height: 18px;
             }
         }
         .custom-title {
@@ -130,15 +173,26 @@
                 /*overflow: hidden;*/
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                line-height: 24px;
+                margin: 0;
             }
             .last-message {
+                margin: 0;
+                line-height: 28px;
                 font-size: 14px;
                 color: #999;
+                max-width: 60vw;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
     }
     .message-time {
         display: block;
         margin-top: 10px;
+    }
+    .message .van-cell {
+        padding: 15px 16px;
     }
 </style>
