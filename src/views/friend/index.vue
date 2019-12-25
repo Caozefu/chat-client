@@ -74,9 +74,6 @@
                         this.$store.commit('updateFriendList', res.data.data);
                         this.originalFriendsList = res.data.data;
                         this.friendsList = this.formatFriendList(this.originalFriendsList);
-                        this.$router.push({
-                            name: 'message'
-                        });
                     })
                     .catch(() => {
                         Toast.fail('获取好友列表失败, 请刷新重试')
