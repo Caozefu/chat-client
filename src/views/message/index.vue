@@ -61,8 +61,7 @@
             },
             // 监听消息记录
             listenMessage() {
-                this.IO = io.connect('http://35.241.111.247:3000');
-                // this.IO = io.connect('http://192.168.25.129:3000');
+                this.IO = io.connect(process.end.VUE_APP_IO_URL);
                 this.IO.on(this.userInfo.user_uid, (data) => {
                     this.setStorage(data);
                     // 发送通知

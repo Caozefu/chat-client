@@ -11,8 +11,8 @@
                             <img :src="userInfo.portrait" alt="">
                         </div>
                         <div class="custom-title">
-                            <p class="user-name">{{userInfo.user_name}}</p>
-                            <p class="last-message">用户名: {{userInfo.nickname}}</p>
+                            <p class="user-name">{{userInfo.nickname}}</p>
+                            <p class="last-message">用户名: {{userInfo.user_name}}</p>
                         </div>
                     </div>
                 </template>
