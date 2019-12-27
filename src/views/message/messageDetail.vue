@@ -41,7 +41,7 @@
             this.messageCache = JSON.parse(localStorage.getItem('message')) || {unreadNum: {}};
             this.userName = this.$route.query.name;
             this.targetId = this.$route.query.id;
-            this.IO = io.connect(process.end.VUE_APP_IO_URL);
+            this.IO = io.connect(process.env.VUE_APP_IO_URL);
             this.IO.on(this.userInfo.user_uid, (data) => {
                 // filter
                 if ((data.id === this.userInfo.user_uid && data.target === this.targetId) || (data.id === this.targetId && data.target === this.userInfo.user_uid)) {

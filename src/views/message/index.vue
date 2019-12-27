@@ -61,7 +61,7 @@
             },
             // 监听消息记录
             listenMessage() {
-                this.IO = io.connect(process.end.VUE_APP_IO_URL);
+                this.IO = io.connect(process.env.VUE_APP_IO_URL);
                 this.IO.on(this.userInfo.user_uid, (data) => {
                     this.setStorage(data);
                     // 发送通知
