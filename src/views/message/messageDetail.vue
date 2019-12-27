@@ -41,8 +41,8 @@
             this.messageCache = JSON.parse(localStorage.getItem('message')) || {unreadNum: {}};
             this.userName = this.$route.query.name;
             this.targetId = this.$route.query.id;
-            // this.IO = io.connect('http://35.241.111.247:3000');
-            this.IO = io.connect('http://192.168.25.129:3000');
+            this.IO = io.connect('http://35.241.111.247:3000');
+            // this.IO = io.connect('http://192.168.25.129:3000');
             this.IO.on(this.userInfo.user_uid, (data) => {
                 // filter
                 if ((data.id === this.userInfo.user_uid && data.target === this.targetId) || (data.id === this.targetId && data.target === this.userInfo.user_uid)) {
