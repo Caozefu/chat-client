@@ -22,6 +22,11 @@
                 msgNum: 'msgNum'
             })
         },
+        data() {
+            return {
+                timer: null
+            }
+        },
         methods: {
             getRequest() {
                 this.$http.get('/api/getRequest?id=' + this.userInfo.user_uid)
@@ -39,10 +44,14 @@
             }
         },
         created() {
-            // if (this.timer) clearInterval(this.timer);
-            setInterval(() => {
+            if (this.timer) clearInterval(this.timer);
+            this.timer = setInterval(() => {
                 this.getRequest();
             }, 1500);
+        },
+        beforeRouteLeave(to, from, next) {
+            clearInterval(this.timer);
+            next();
         },
         beforeRouteEnter(to, from, next) {
             if (to.name === 'home') {

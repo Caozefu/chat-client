@@ -52,9 +52,59 @@
     }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .user-info {
     display: flex;
     align-items: center;
+}
+.message-list-left {
+    display: flex;
+    align-items: center;
+    .portrait {
+        width: 50px;
+        height: 50px;
+        /*overflow: hidden;*/
+        position: relative;
+        & > img {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+        .van-tag {
+            display: block;
+            width: 18px;
+            height: 18px;
+            position: absolute;
+            right: -9px;
+            top: -9px;
+            padding: 0;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 18px;
+        }
+    }
+    .custom-title {
+        line-height: 10px;
+        margin-left: 10px;
+        .user-name {
+            font-weight: 900;
+            font-size: 18px;
+            /*overflow: hidden;*/
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 24px;
+            margin: 0;
+        }
+        .last-message {
+            margin: 0;
+            line-height: 28px;
+            font-size: 14px;
+            color: #999;
+            max-width: 60vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
 }
 </style>
