@@ -66,7 +66,7 @@
                 if (!this.msg.trim()) return;
                 this.IO.emit('chat message', {
                     portrait: this.userInfo.portrait,
-                    name: this.userInfo.user_name,
+                    name: this.userInfo.nickname,
                     id: this.userInfo.user_uid,
                     msg: this.msg,
                     target: this.targetId,

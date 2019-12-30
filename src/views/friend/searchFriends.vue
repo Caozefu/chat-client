@@ -27,8 +27,8 @@
                             <img :src="item.portrait" alt="">
                         </div>
                         <div class="custom-title">
-                            <p class="user-name">{{item.user_name}}</p>
-                            <p class="last-message">{{item.nickname}}</p>
+                            <p class="user-name">{{item.nickname}}</p>
+                            <p class="last-message">用户名：{{item.user_name}}</p>
                         </div>
                     </div>
                 </template>

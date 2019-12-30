@@ -10,10 +10,10 @@
                 <template v-if="value.length">
                     <van-index-anchor :index="key.toUpperCase()" :key="index"></van-index-anchor>
                     <van-cell v-for="(sub_item, sub_index) in value"
-                              :key="sub_index" @click="friendDetail(sub_item.user_uid, sub_item.user_name)">
+                              :key="sub_index" @click="friendDetail(sub_item.user_uid, sub_item.nickname)">
                         <template slot="title">
                             <img :src="sub_item.portrait" alt="" class="portrait">
-                            <span class="custom-title">{{sub_item.user_name}}</span>
+                            <span class="custom-title">{{sub_item.nickname}}</span>
                         </template>
                     </van-cell>
                 </template>
@@ -44,7 +44,7 @@
                 let res = {};
                 codeList.forEach(code => res[code] = []);
                 list.forEach(item => {
-                    const code = Pinyin.getWordsCode(item.user_name)[0];
+                    const code = Pinyin.getWordsCode(item.nickname)[0];
                     if (!res[code]) {
                         res['#'].push(item);
                     } else {

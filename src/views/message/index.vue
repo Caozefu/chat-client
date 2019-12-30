@@ -101,7 +101,7 @@
                     const res = await this.$http.get('/api/searchFriendById?id=' + key);
                     const i = res.data.data[0] ? res.data.data[0] : {};
                     item.id = i.user_uid;
-                    item.name = i.user_name;
+                    item.name = i.nickname;
                     item.portrait = i.portrait;
                     arr.push(item)
                 }
